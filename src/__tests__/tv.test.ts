@@ -1345,6 +1345,35 @@ describe("Tailwind Variants (TV) - Compound Slots", () => {
     ]);
   });
 
+  test("should work with compound slots -- with a single variant -- undefined for boolean variant", () => {
+    const nav = tv({
+      base: "base",
+      slots: {
+        toggle: "slot--toggle",
+        item: "slot--item",
+      },
+      variants: {
+        isActive: {
+          true: "",
+          false: "",
+        },
+      },
+      compoundSlots: [
+        {
+          slots: ["item", "toggle"],
+          isActive: false,
+          class: "compound--item-toggle--closed",
+        },
+      ],
+    });
+
+    let styles = nav({isActive: undefined});
+
+    expect(styles.base()).toHaveClass(["base"]);
+    expect(styles.toggle()).toHaveClass(["slot--toggle", "compound--item-toggle--closed"]);
+    expect(styles.item()).toHaveClass(["slot--item", "compound--item-toggle--closed"]);
+  });
+
   test("should work with compound slots -- with multiple variants -- defaultVariants", () => {
     const pagination = tv({
       slots: {

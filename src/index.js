@@ -373,12 +373,15 @@ export const tv = (options, configProp) => {
 
           for (const key of Object.keys(slotVariants)) {
             const completePropsValue = getCompleteProps(key, slotProps)[key];
+            const slotVariantValue = slotVariants[key];
+            const isBlankOrFalse = (v) => v == null || v === false;
+
+            if (isBlankOrFalse(slotVariantValue) && isBlankOrFalse(completePropsValue)) continue;
 
             if (
-              completePropsValue === undefined ||
-              (Array.isArray(slotVariants[key])
-                ? !slotVariants[key].includes(completePropsValue)
-                : slotVariants[key] !== completePropsValue)
+              Array.isArray(slotVariantValue)
+                ? !slotVariantValue.includes(completePropsValue)
+                : slotVariantValue !== completePropsValue
             ) {
               isValid = false;
               break;
