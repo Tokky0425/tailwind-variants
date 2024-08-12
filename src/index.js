@@ -304,21 +304,17 @@ export const tv = (options, configProp) => {
 
         for (const [key, value] of Object.entries(compoundVariantOptions)) {
           const completePropsValue = getCompleteProps(key, slotProps)[key];
+          const isBlankOrFalse = (v) => v == null || v === false;
 
-          if (Array.isArray(value)) {
-            if (!value.includes(completePropsValue)) {
-              isValid = false;
-              break;
-            }
-          } else {
-            const isBlankOrFalse = (v) => v == null || v === false;
+          if (isBlankOrFalse(value) && isBlankOrFalse(completePropsValue)) continue;
 
-            if (isBlankOrFalse(value) && isBlankOrFalse(completePropsValue)) continue;
-
-            if (completePropsValue !== value) {
-              isValid = false;
-              break;
-            }
+          if (
+            Array.isArray(value)
+              ? !value.includes(completePropsValue)
+              : value !== completePropsValue
+          ) {
+            isValid = false;
+            break;
           }
         }
 
@@ -371,17 +367,16 @@ export const tv = (options, configProp) => {
         if (!isEmptyObject(slotVariants)) {
           let isValid = true;
 
-          for (const key of Object.keys(slotVariants)) {
+          for (const [key, value] of Object.entries(slotVariants)) {
             const completePropsValue = getCompleteProps(key, slotProps)[key];
-            const slotVariantValue = slotVariants[key];
             const isBlankOrFalse = (v) => v == null || v === false;
 
-            if (isBlankOrFalse(slotVariantValue) && isBlankOrFalse(completePropsValue)) continue;
+            if (isBlankOrFalse(value) && isBlankOrFalse(completePropsValue)) continue;
 
             if (
-              Array.isArray(slotVariantValue)
-                ? !slotVariantValue.includes(completePropsValue)
-                : slotVariantValue !== completePropsValue
+              Array.isArray(value)
+                ? !value.includes(completePropsValue)
+                : value !== completePropsValue
             ) {
               isValid = false;
               break;
