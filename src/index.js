@@ -296,6 +296,16 @@ export const tv = (options, configProp) => {
       };
     };
 
+    const isValidValue = (configuredValue, propsValue) => {
+      const isBlankOrFalse = (v) => v == null || v === false;
+
+      if (isBlankOrFalse(configuredValue) && isBlankOrFalse(propsValue)) return true;
+
+      return Array.isArray(configuredValue)
+        ? configuredValue.includes(propsValue)
+        : configuredValue === propsValue;
+    };
+
     const getCompoundVariantsValue = (cv = [], slotProps) => {
       const result = [];
 
@@ -304,15 +314,8 @@ export const tv = (options, configProp) => {
 
         for (const [key, value] of Object.entries(compoundVariantOptions)) {
           const completePropsValue = getCompleteProps(key, slotProps)[key];
-          const isBlankOrFalse = (v) => v == null || v === false;
 
-          if (isBlankOrFalse(value) && isBlankOrFalse(completePropsValue)) continue;
-
-          if (
-            Array.isArray(value)
-              ? !value.includes(completePropsValue)
-              : value !== completePropsValue
-          ) {
+          if (!isValidValue(value, completePropsValue)) {
             isValid = false;
             break;
           }
@@ -369,15 +372,8 @@ export const tv = (options, configProp) => {
 
           for (const [key, value] of Object.entries(slotVariants)) {
             const completePropsValue = getCompleteProps(key, slotProps)[key];
-            const isBlankOrFalse = (v) => v == null || v === false;
 
-            if (isBlankOrFalse(value) && isBlankOrFalse(completePropsValue)) continue;
-
-            if (
-              Array.isArray(value)
-                ? !value.includes(completePropsValue)
-                : value !== completePropsValue
-            ) {
+            if (!isValidValue(value, completePropsValue)) {
               isValid = false;
               break;
             }
